@@ -97,7 +97,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     '(max-width: 469px) 469px',
     '(max-width: 580px) 580px',
     '800px'];
-  image.alt = `An image from ${restaurant.name}`;
+  image.alt = `An image from ${restaurant.name} Restaurant`;
   image.setAttribute('tabindex', 101);
 
   const cuisine = document.getElementById('restaurant-cuisine');

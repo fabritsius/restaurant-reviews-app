@@ -165,7 +165,7 @@ createRestaurantHTML = (restaurant) => {
       '(max-width: 322px) 262px',
       '(max-width: 436px) 376px',
       '469px'];
-  image.alt = `An image from ${restaurant.name}`;
+  image.alt = `An image from ${restaurant.name} Restaurant`;
   li.append(image);
 
   const name = document.createElement('h2');
