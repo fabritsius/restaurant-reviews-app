@@ -2,18 +2,19 @@
 
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
-## Completed Stage 1
+## Completed Stage 2
 
-You can [check](https://github.com/fabritsius/mws-restaurant-stage-1) in what state was this project before. I decided not to enclude such code in this repository cause I'm afraid it may bring misfortune. In real life hopefully there is nothing even close to that level of crafted monstrosity.
+This stage is an incremental update of **Stage One** (check [stage-one branch](/fabritsius/restaurant-reviews-app/tree/stage-one) of this repository to learn more).
 
-I tried to preserve some design ideas from the original. And I even think it looks pleasant now.
+For some reason there weren't much stuff to do. I only changed couple lines to work with a server when fetching restaurant data. And made a small upgrade to a service worker, now it caches requests when they happen. I also made several minor changes  here and there.
 
 ### What it can do on my machine:
 
+- Successfully fetches data from the server, when there is one running;
 - Looks great with every screen size and ratio, brave disign choices were made;
-- It Works Offline! Well... Kind of. Only pages that vere visited, which is still great for a website though;
-- Images are responsive and are supposed to be responsive everywhere (some strange stuff happens in Chrome Mobile Emulator).
-- Can be TAB-ed with ease. Sometimes not in order (I moved some parts to the end), but I think it is better this way but will reverse it if needed;
+- It Works Offline! Well... Kind of. Only pages that were visited, which is still great for a website though;
+- Images are responsive and are supposed to be responsive everywhere;
+- Can be TAB-ed with ease. Sometimes not in order (I moved some parts to the end);
 - I checked usability with ChromeVox and it seems to me it is reasonable, although I prefer the other way;
 - You can use a Map for multiple purposes.
 
@@ -21,9 +22,12 @@ I tried to preserve some design ideas from the original. And I even think it loo
 
 There is no reason to use it apart from Maps (there is no backend currently), but just in case:
 
-1. Copy my code via Git or manually;
-2. Open copied directory in your terminal;
-3. Use `python3 -m http.server 8000` to launch a server (you need python for that);
-4. Go to `localhost:8000` to see the masterpeace.
+1. Clone [stage-two-server branch](/fabritsius/restaurant-reviews-app/tree/stage-two-server) of this repository;
+2. Use README.md from it to find out what preparations are nesessary to launch the server;
+3. Enter `node server` and check if it worked (port: `1337`);
+4. Copy my code via Git or manually;
+5. Open copied directory in your terminal;
+6. Use `python3 -m http.server 8000` to launch another server (you need python for that);
+7. Go to [localhost:8000](http://localhost:8000) to see the masterpeace.
 
 Thanks for your attension!
