@@ -4,7 +4,7 @@
 
 ## Completed Stage 2
 
-This stage is an incremental update of **Stage One** (check [stage-one branch](/fabritsius/restaurant-reviews-app/tree/stage-one) of this repository to learn more).
+This stage is an incremental update of **Stage One** (check [stage-one branch](https://github.com/fabritsius/restaurant-reviews-app/tree/stage-one) of this repository to learn more).
 
 For some reason there weren't much stuff to do. I only changed couple lines to work with a server when fetching restaurant data. And made a small upgrade to a service worker, now it caches requests when they happen. I also made several minor changes  here and there.
 
@@ -22,7 +22,7 @@ For some reason there weren't much stuff to do. I only changed couple lines to w
 
 There is no reason to use it apart from Maps (there is no backend currently), but just in case:
 
-1. Clone [stage-two-server branch](/fabritsius/restaurant-reviews-app/tree/stage-two-server) of this repository;
+1. Clone [stage-two-server branch](https://github.com/fabritsius/restaurant-reviews-app/tree/stage-two-server) of this repository;
 2. Use README.md from it to find out what preparations are nesessary to launch the server;
 3. Enter `node server` and check if it worked (port: `1337`);
 4. Copy my code via Git or manually;
