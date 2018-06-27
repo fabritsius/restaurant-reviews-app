@@ -10,8 +10,7 @@ const urlsToCache = [
   'js/main.js',
   'js/restaurant_info.js',
   'js/dbhelper.js',
-  'js/swhelper.js',
-  // 'img/favicon.ico'
+  'js/swhelper.js'
 ];
 
 // Perform install steps
@@ -30,9 +29,23 @@ self.addEventListener('fetch', (event) => {
   // console.log(`fetch request: ${event.request.url}`)
   event.respondWith(
     caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+      // Fetch the response if it is not cached 
+      return response || fetch(event.request).then(networkResponse => {
+        // Cache the response only if it is useful
+        if (networkResponse && networkResponse.status === 200) {
+          // Clone the response cause it is a stream
+          const clonedResponse = networkResponse.clone();
+
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request.url, clonedResponse);
+            })
+        }
+        // Return the response in any scenario
+        return networkResponse;
+      });
     })
-  )
+  );
 });
 
 // Delete outdated caches
