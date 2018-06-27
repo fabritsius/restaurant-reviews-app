@@ -8,6 +8,14 @@ This stage is an incremental update of **Stage One** (check [stage-one branch](h
 
 For some reason there weren't much stuff to do. I only changed couple lines to work with a server when fetching restaurant data. And made a small upgrade to a service worker, now it caches requests when they happen. I also made several minor changes  here and there.
 
+### Lighthouse scores
+
+- Performance: 86
+- Progressive Web App: 91
+- Accessibility: 94
+- Best Practices: 94
+- SEO: 78
+
 ### What it can do on my machine:
 
 - Successfully fetches data from the server, when there is one running;
