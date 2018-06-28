@@ -10,19 +10,12 @@ At first I thought this stage is very easy and there isn't mush stuff to do. The
 
 I successfully added IndexedDB to this app with tiny [idb library](https://github.com/jakearchibald/idb). The most interesting part is that [version without IDB](https://github.com/fabritsius/restaurant-reviews-app/tree/stage-two-no-idb) has higher performance in Lighthouse test. Of course, my implementation may be the reason behind.
 
-### Lighthouse scores
+### Lighthouse scores 
 
-Home Page:
-- Performance: 86
+Both Pages:
+- Performance: 85
 - Progressive Web App: 91
 - Accessibility: 94
-- Best Practices: 94
-- SEO: 78
-
-Restaurant Page:
-- Performance: 83
-- Progressive Web App: 91
-- Accessibility: 89 (low)
 - Best Practices: 94
 - SEO: 78
 
