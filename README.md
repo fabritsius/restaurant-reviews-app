@@ -6,7 +6,7 @@
 
 This stage is an incremental update of **Stage One** (check [stage-one branch](https://github.com/fabritsius/restaurant-reviews-app/tree/stage-one) of this repository to learn more).
 
-At first I thought this stage is very easy and there isn't mush stuff to do. The reason behind is I forgot about IndexedDB implementation at all. I used cache for everything. Thankfully I realized my mistake before submitting.
+At first I thought this stage is very easy and there isn't mush stuff to do. The reason behind is I forgot about IndexedDB implementation at all. I used cache for everything. Fortunately, I realized my mistake before submitting.
 
 I successfully added IndexedDB to this app with tiny [idb library](https://github.com/jakearchibald/idb). The most interesting part is that [version without IDB](https://github.com/fabritsius/restaurant-reviews-app/tree/stage-two-no-idb) has higher performance in Lighthouse test. Of course, my implementation may be the reason behind.
 
