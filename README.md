@@ -10,9 +10,17 @@ For some reason there weren't much stuff to do. I only changed couple lines to w
 
 ### Lighthouse scores
 
-- Performance: 86
+Home Page:
+- Performance: 88
 - Progressive Web App: 91
 - Accessibility: 94
+- Best Practices: 94
+- SEO: 78
+
+Restaurant Page:
+- Performance: 88
+- Progressive Web App: 91
+- Accessibility: 89 (low)
 - Best Practices: 94
 - SEO: 78
 
