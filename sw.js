@@ -50,16 +50,22 @@ self.addEventListener('fetch', (event) => {
 
 // Delete outdated caches
 self.addEventListener('activate', (event) => {
-  var cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
+        cacheNames.filter((cacheName) => {
+          return cacheName.startsWith(APP_NAME) &&
+                 CACHE_NAME != cacheName;
+        }).map((cacheName) => {
+          return caches.delete(cacheName);
         })
       );
     })
   );
+});
+
+self.addEventListener('message', function(event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
