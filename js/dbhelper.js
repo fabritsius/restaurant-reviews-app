@@ -13,32 +13,107 @@ class DBHelper {
   }
 
   /**
+   * Database Length.
+   * (temporary solution for a very stupid problem)
+   *
+   * You see, cause the server on the port 1337
+   * doesn't return amount of restaurants, I have to hardcode it for now.
+   * It wouldn't have been an issue if when we use fetchRestaurantById()
+   * full database is retrieved and after necessary restaurant is filtered.
+   * But, I solved it properly (or so I thought before noticing this).
+   * Now (without knowing length) if a user visits any restaurant page
+   * before visiting home page, on a home page he or she will see only
+   * restaurants from IDB (restaurants which were visited before).
+   * Using (records.length === 0) won't work because of described thing.
+   * Sadly, I am not seeing better solution at the moment.
+   * (I suggest to add length to restaurants/{id} response,
+   * so that client can figure out if data any is missing.)
+   */
+  static get DATABASE_LENGTH() {
+    return 10;
+  }
+
+  /**
+   * IndexedDB
+   */
+  static get _dbPromise() {
+    if (navigator.serviceWorker) {
+      return idb.open('restaurants', 1, (upgradeDb) => {
+        upgradeDb.createObjectStore('restaurants_data', { 
+          keyPath: 'id'
+        });
+      });
+    }
+    return Promise.resolve();
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(`${DBHelper.DATABASE_URL}/restaurants`)
-      .then(response => {
-      return response.json();
-    }).then(json_data => {
-      return callback(null, json_data);
-    }).catch(error => {
-      return callback(error, null);
+    DBHelper._dbPromise.then((db) => {
+      if (!db) return;
+      // Get all restaurants from IDB
+      const store = db.transaction('restaurants_data')
+        .objectStore('restaurants_data');
+      store.getAll().then((records) => {
+        // Fetch if not all restaurants are stored locally
+        if (records.length < DBHelper.DATABASE_LENGTH) {
+          fetch(`${DBHelper.DATABASE_URL}/restaurants`)
+            .then(response => {
+            return response.json();
+          }).then(json_data => {
+            // Put restaurants into IDB
+            const store = db.transaction('restaurants_data', 'readwrite')
+              .objectStore('restaurants_data');
+            json_data.forEach(record => {
+              store.put(record);
+            })
+            // Return restaurants from network
+            return callback(null, json_data);
+          }).catch(error => {
+            return callback(error, null);
+          });
+        }
+        // Return restaurants from IDB
+        return callback(null, records);
+      });
     });
   }
+
 
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
-      .then(response => {
-      return response.json();
-    }).then(json_data => {
-      return callback(null, json_data);
-    }).catch(error => {
-      return callback(error, null);
+    return DBHelper._dbPromise.then((db) => {
+      if (!db) return;
+      // Get a restaurant from IDB
+      return db.transaction('restaurants_data')
+        .objectStore('restaurants_data').get(parseInt(id));
+    }).then((record) => {
+      if (record) {
+        // Return a restaurant from IDB
+        return callback(null, record);
+      }
+      // Fetch if restaurant is not in IDB
+      fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
+        .then(response => {
+        return response.json();
+      }).then(json_data => {
+        // Put a restaurant into IDB
+        DBHelper._dbPromise.then((db) => {
+          const store = db.transaction('restaurants_data', 'readwrite')
+            .objectStore('restaurants_data');
+          store.put(json_data);
+        });
+        // Return a restaurant from network
+        return callback(null, json_data);
+      }).catch(error => {
+        return callback(error, null);
+      });
     });
-  }
+  };  
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.

@@ -11,6 +11,7 @@ const urlsToCache = [
   'js/restaurant_info.js',
   'js/dbhelper.js',
   'js/swhelper.js',
+  'node_modules/idb/lib/idb.js',
   'icons/favicon.ico'
 ];
 
@@ -31,7 +32,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
       // Fetch the response if it is not cached 
-      return response || fetch(event.request)
+      return response || fetch(event.request);
     })
   );
 });
