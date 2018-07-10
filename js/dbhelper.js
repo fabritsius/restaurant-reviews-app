@@ -42,6 +42,9 @@ class DBHelper {
         upgradeDb.createObjectStore('restaurants_data', { 
           keyPath: 'id'
         });
+        upgradeDb.createObjectStore('reviews_data', {
+          keyPath: 'id'
+        })
       });
     }
     return Promise.resolve();
@@ -108,12 +111,49 @@ class DBHelper {
           store.put(json_data);
         });
         // Return a restaurant from network
+        console.log('Fetched restaurant');
         return callback(null, json_data);
       }).catch(error => {
         return callback(error, null);
       });
     });
-  };  
+  };
+
+  /**
+   * Fetch reviews for a restaurant.
+   */
+  static fetchReviewByRestaurantId(id, callback) {
+    DBHelper._dbPromise.then((db) => {
+      if (!db) return;
+      // Get all reviews from IDB
+      const store = db.transaction('reviews_data')
+        .objectStore('reviews_data');
+      store.getAll().then((records) => {
+        // Filter reviews by restaurant ID
+        const results = records.filter(r => r.restaurant_id == id);
+        if (results.length > 0) {
+          // Return reviews from IDB
+          return callback(null, results);
+        }
+        // Fetch if reviews aren't in IDB
+        fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
+          .then(response => {
+          return response.json();
+        }).then(json_data => {
+          // Put reviews into IDB
+          const store = db.transaction('reviews_data', 'readwrite')
+            .objectStore('reviews_data');
+          json_data.forEach(record => {
+            store.put(record);
+          })
+          // Return reviews from network
+          return callback(null, json_data);
+        }).catch(error => {
+          return callback(error, null);
+        });
+      });
+    });
+  }
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
