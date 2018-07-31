@@ -93,6 +93,28 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  const favorite = document.getElementById('fav-button');
+  favorite.setAttribute('tabindex', 0);
+  favorite.setAttribute('role', 'checkbox');
+  favorite.setAttribute('aria-label', `${restaurant.name} added to favorite restaurants`);
+  // at some point boolean value bacomes a string (probably servers fault)
+  if (restaurant.is_favorite == 'true') {
+    favorite.className = 'isFavorite';
+    favorite.setAttribute('aria-checked', 'true');
+  } else {
+    favorite.setAttribute('aria-checked', 'false');
+  }
+  favorite.addEventListener('click', () => {
+    favorite.classList.toggle('isFavorite');
+    if (favorite.classList.contains('isFavorite')) {
+      favorite.setAttribute('aria-checked', 'true');
+      DBHelper.setFavorite(restaurant, true);
+    } else {
+      favorite.setAttribute('aria-checked', 'false');
+      DBHelper.setFavorite(restaurant, false);
+    }
+  });
+
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
   address.setAttribute('tabindex', 0);

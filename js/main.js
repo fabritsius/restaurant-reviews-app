@@ -157,6 +157,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  const imageBox = document.createElement('div');
+  imageBox.className = 'restaurant-img-box';
+
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
@@ -165,8 +168,20 @@ createRestaurantHTML = (restaurant) => {
       '(max-width: 322px) 262px',
       '(max-width: 436px) 376px',
       '469px'];
-  image.alt = `An image from ${restaurant.name} Restaurant`;
-  li.append(image);
+  image.alt = `An image from ${restaurant.name} restaurant`;
+  imageBox.append(image);
+  
+  // at some point boolean value bacomes a string (probably servers fault)
+  if (restaurant.is_favorite == 'true') {
+    const favoriteIcon = document.createElement('div');
+    favoriteIcon.className = 'restaurant-fav';
+    favoriteIcon.innerHTML = '❤';
+    favoriteIcon.setAttribute('tabindex', 0);
+    favoriteIcon.setAttribute('aria-label', `${restaurant.name} is marked as a favorite restaurant`);
+    imageBox.append(favoriteIcon);
+  }
+  
+  li.append(imageBox);
 
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
@@ -183,7 +198,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
-  more.setAttribute('aria-label', `More about ${restaurant.name}`);
+  more.setAttribute('aria-label', `More about ${restaurant.name} restaurant`);
   li.append(more);
 
   return li

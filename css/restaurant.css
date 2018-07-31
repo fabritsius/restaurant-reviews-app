@@ -56,6 +56,9 @@
   width: 100%;
   z-index: 888;
 }
+#restaurant-name-box {
+  display: flex;
+}
 #restaurant-name {
   color: #f18200;
   font-family: Open Sans, Arial,sans-serif;
@@ -63,8 +66,34 @@
   font-weight: 200;
   letter-spacing: 0;
   margin: 15px 20px 30px;
+  flex: 1;
   text-transform: uppercase;
   line-height: 1.1;
+}
+#fav-button {
+  color: grey;
+  border: none;
+  background-color: #FFF0;
+  font-size: 40px;
+  text-align: center;
+  vertical-align: middle;
+  padding-bottom: 7px;
+  margin-bottom: 12px;
+  transition: all 150ms cubic-bezier(0, 0, 1, 0.04);
+}
+#fav-button.isFavorite {
+  color: #f18200;
+}
+@media (hover: hover) {
+  #fav-button:hover {
+    font-size: 41px;
+    padding-bottom: 6px;
+    text-shadow: 0 4px 10px #9a9a9a;
+  }
+}
+#fav-button:focus {
+  outline:0;
+  text-shadow: 0 4px 10px #9a9a9a;
 }
 #restaurant-img {
 	width: 100%;

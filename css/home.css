@@ -50,6 +50,9 @@
   box-shadow: 0px 1px 10px #d2d2d2;
   position: relative;
 }
+#restaurants-list .restaurant-img-box {
+  position: relative;
+}
 #restaurants-list .restaurant-img {
   background-color: #ccc;
   display: block;
@@ -57,6 +60,17 @@
   max-width: 100%;
   min-width: 100%;
   border-radius: 10px 10px 0 0;
+}
+#restaurants-list .restaurant-fav {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: white;
+  padding: 3px 9px 0px 10px;
+  border-radius: 25px;
+  box-shadow: 0 0 44px #6b6b6b;
+  background-color: orange;
+  font-size: 30px;
 }
 #restaurants-list li h2 {
   color: #f18200;

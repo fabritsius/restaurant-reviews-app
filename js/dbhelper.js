@@ -84,7 +84,6 @@ class DBHelper {
     });
   }
 
-
   /**
    * Fetch a restaurant by its ID.
    */
@@ -294,5 +293,27 @@ class DBHelper {
     return marker;
   } */
 
+  /**
+   * Set favorite field for a restaurant
+  **/
+  static setFavorite(restaurant, isFavorite) {
+    // Fetch to change a value of is_favorite
+    fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${isFavorite}`, {
+      method: 'PUT'
+    }).then(response => {
+      return response.json();
+    }).then(json_data => {
+      // Put updated restaurant into IDB
+      DBHelper._dbPromise.then((db) => {
+        const store = db.transaction('restaurants_data', 'readwrite')
+          .objectStore('restaurants_data');
+        store.put(json_data);
+      });
+      return json_data;
+    }).catch(error => {
+      console.log(error);
+      return;
+    });
+  }
 }
 
