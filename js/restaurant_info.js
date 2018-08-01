@@ -176,22 +176,48 @@ fillReviewsHTML = (reviews = self.reviews) => {
   title.setAttribute('tabindex', 0);
   container.appendChild(title);
 
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    noReviews.setAttribute('tabindex', 0);
-    container.appendChild(noReviews);
-    return;
+  // at first, I though POST request will return multiple reviews
+  // this function fills DOM list with reviews
+  populate = (list, review_items) => {
+    list.innerHTML = '';
+    if (!review_items) {
+      const noReviews = document.createElement('p');
+      noReviews.innerHTML = 'No reviews yet!';
+      noReviews.setAttribute('tabindex', 0);
+      list.appendChild(noReviews);
+      return;
+    }
+    review_items.forEach(item => {
+      list.appendChild(createReviewHTML(item));
+    });
   }
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+
+  // create a form for new reviews submission
+  const reviewForm = createReviewFormHTML();
+  reviewForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    let review = {"restaurant_id": self.restaurant.id};
+    const formData = new FormData(reviewForm);
+    for (const [key, value] of formData.entries()) {
+      review[key] = value;
+    }
+    DBHelper.submitReview(review).then(reviewData => {
+      const reviewsList = document.getElementById('reviews-list');
+      // populate(reviewsList, reviewsData);
+      reviewsList.appendChild(createReviewHTML(reviewData));
+      reviewForm.reset();
+    });
   });
+  container.appendChild(reviewForm);
+  
+  const ul = document.createElement('ul');
+  ul.setAttribute('id', 'reviews-list');
+  populate(ul, reviews);
   container.appendChild(ul);
 }
 
 /**
- * Create review HTML and add it to the webpage.
+ * Create review HTML and return it.
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
@@ -212,7 +238,7 @@ createReviewHTML = (review) => {
   li.appendChild(reviewHead);
 
   const rating = document.createElement('p');
-  const ratingData = review.rating;
+  const ratingData = parseInt(review.rating);
   let ratingTag;
   switch (ratingData) {
     case 1: ratingTag = 'very-bad'; break;
@@ -235,6 +261,78 @@ createReviewHTML = (review) => {
   li.appendChild(comment);
 
   return li;
+}
+
+/**
+ * Create review form HTML and return it.
+ */
+createReviewFormHTML = () => {
+  const form = document.createElement('form');
+  form.setAttribute('id', 'review-form');
+
+  // add name field with a label
+  const nameBox = document.createElement('div');
+  const nameLabel = document.createElement('label');
+  nameLabel.setAttribute('for', 'review-form-name');
+  nameLabel.className = 'divis-words';
+  nameLabel.innerHTML = 'Name';
+  nameBox.appendChild(nameLabel);
+  const nameInput = document.createElement('input');
+  nameInput.setAttribute('id', 'review-form-name');
+  nameInput.setAttribute('name', 'name');
+  nameInput.setAttribute('type', 'text');
+  nameInput.setAttribute('placeholder', 'Your name');
+  nameBox.appendChild(nameInput);
+  form.appendChild(nameBox);
+
+  // add rating field with a label
+  const ratingBox = document.createElement('div');
+  const ratingLabel = document.createElement('label');
+  ratingLabel.setAttribute('for', 'review-form-rating');
+  ratingLabel.className = 'divis-words';
+  ratingLabel.innerHTML = 'Restaurant Rating';
+  ratingBox.appendChild(ratingLabel);
+  const ratingInput = document.createElement('select');
+  ratingInput.setAttribute('id', 'review-form-rating');
+  ratingInput.setAttribute('name', 'rating');
+  for (let i = 1; i <= 5; i++) {
+    const ratingOption = document.createElement('option');
+    ratingOption.setAttribute('value', i);
+    ratingOption.innerHTML = i;
+    ratingInput.appendChild(ratingOption);
+  }
+  ratingInput.lastChild.setAttribute('selected', true);
+  ratingBox.appendChild(ratingInput);
+  form.appendChild(ratingBox);
+
+  // add comment area and SKIP a label
+  const commentBox = document.createElement('div');
+  // const commentLabel = document.createElement('label');
+  // commentLabel.setAttribute('for', 'review-form-textarea');
+  // commentLabel.classList.add('divis-words');
+  // commentLabel.classList.add('full-width');
+  // commentLabel.innerHTML = 'Comment';
+  // commentBox.appendChild(commentLabel);
+  const commentInput = document.createElement('textarea');
+  commentInput.setAttribute('id', 'review-form-textarea');
+  commentInput.setAttribute('name', 'comments');
+  commentInput.setAttribute('rows', 2);
+  commentInput.setAttribute('aria-label', 'Your comment');
+  commentInput.setAttribute('placeholder', 'What do you think about this restaurant?');
+  commentBox.appendChild(commentInput);
+  form.appendChild(commentBox);
+
+  // add submit button
+  const submitBox = document.createElement('div');
+  submitBox.setAttribute('id', 'review-form-submit-box');
+  const submitBtn = document.createElement('input');
+  submitBtn.setAttribute('id', 'review-form-submit');
+  submitBtn.setAttribute('type', 'submit');
+  submitBtn.setAttribute('value', 'Post your review');
+  submitBox.appendChild(submitBtn);
+  form.appendChild(submitBox);
+
+  return form;
 }
 
 /**

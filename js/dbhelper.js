@@ -315,5 +315,31 @@ class DBHelper {
       return;
     });
   }
-}
 
+  /**
+   * Submit review for a restaurant
+  **/
+  static submitReview(review) {
+    // Make a POST request to submit new review for a restaurant
+    return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(review)
+    }).then(response => {
+      return response.json();
+    }).then(json_data => {
+      // Put a review into IDB
+      DBHelper._dbPromise.then((db) => {
+        const store = db.transaction('reviews_data', 'readwrite')
+          .objectStore('reviews_data');
+        store.put(json_data);
+      });
+      return json_data;
+    }).catch(error => {
+      console.log(error);
+      return;
+    });
+  }
+}
