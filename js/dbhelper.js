@@ -44,6 +44,9 @@ class DBHelper {
         });
         upgradeDb.createObjectStore('reviews_data', {
           keyPath: 'id'
+        });
+        upgradeDb.createObjectStore('offline_data', {
+          keyPath: 'special_id'
         })
       });
     }
@@ -305,14 +308,39 @@ class DBHelper {
     }).then(json_data => {
       // Put updated restaurant into IDB
       DBHelper._dbPromise.then((db) => {
+        if (!db) return;
         const store = db.transaction('restaurants_data', 'readwrite')
           .objectStore('restaurants_data');
         store.put(json_data);
       });
+      DBHelper.feedbackMessage('changes saved');
       return json_data;
     }).catch(error => {
-      console.log(error);
-      return;
+      // Network error => store locally
+      restaurant.is_favorite = isFavorite;
+      // Put updated restaurant into IDB
+      DBHelper._dbPromise.then(db => {
+        if (!db) return;
+        const store = db.transaction('restaurants_data', 'readwrite')
+          .objectStore('restaurants_data');
+        store.put(restaurant);
+      }).catch(error => {
+        console.log(error);
+        return;
+      });
+      // Store updated restaurant in offline store
+      // to upload as soon as connection returns.
+      const specialId = `restaurants_data:${restaurant.id}`;
+      DBHelper._dbPromise.then(db => {
+        const store = db.transaction('offline_data', 'readwrite')
+          .objectStore('offline_data');
+        store.put({'special_id':specialId, 'data':restaurant});
+      }).catch(error => {
+        console.log(error);
+        return;
+      });
+      DBHelper.feedbackMessage('lost connection, changes saved locally');
+      return restaurant;
     });
   }
 
@@ -332,14 +360,75 @@ class DBHelper {
     }).then(json_data => {
       // Put a review into IDB
       DBHelper._dbPromise.then((db) => {
+        if (!db) return;
         const store = db.transaction('reviews_data', 'readwrite')
           .objectStore('reviews_data');
         store.put(json_data);
       });
+      DBHelper.feedbackMessage('changes saved');
       return json_data;
     }).catch(error => {
-      console.log(error);
-      return;
+      // Network error => store locally
+      const now = new Date().getTime();
+      review.createdAt = now;
+      review.updatedAt = now;
+      // Put a review into IDB
+      DBHelper._dbPromise.then(db => {
+        if (!db) return;
+        const store = db.transaction('reviews_data', 'readwrite')
+          .objectStore('reviews_data');
+        store.put(review);
+      }).catch(error => {
+        console.log(error);
+        return;
+      });
+      // Store new review in offline store
+      // to upload as soon as connection returns.
+      const specialId = `reviews_data:${now}`;
+      DBHelper._dbPromise.then(db => {
+        const store = db.transaction('offline_data', 'readwrite')
+          .objectStore('offline_data');
+        store.put({'special_id':specialId, 'data':review});
+      }).catch(error => {
+        console.log(error);
+        return;
+      });
+      DBHelper.feedbackMessage('lost connection, changes saved locally');
+      return review;
     });
+  }
+
+  /**
+   * Try submitting data from Offline Store
+  **/
+  static submitOfflineData() {
+    DBHelper._dbPromise.then((db) => {
+      if (!db) return;
+      const store = db.transaction('offline_data', 'readwrite')
+        .objectStore('offline_data');
+      store.getAll().then(offlineData => {
+        offlineData.forEach(item => {
+          const category = item.special_id.split(':')[0];
+          if (category == 'restaurants_data') {
+            DBHelper.setFavorite(item.data, item.data.is_favorite);
+            DBHelper.feedbackMessage(`${item.data.name} restaurant data uploaded`);
+          } else if (category == 'reviews_data') {
+            DBHelper.submitReview(item.data);
+            DBHelper.feedbackMessage(`${item.data.name}'s review uploaded`);
+          }
+          store.delete(item.special_id);
+        });
+      });
+    });
+  }
+
+  /**
+   * Give feedback to a user when an action occurs
+  **/
+  static feedbackMessage(message) {
+    // this is NOT a final version of this function
+    // in future versions this will cause corner pop-ups
+    console.log(`feedback => ${message}`);
+    return;
   }
 }

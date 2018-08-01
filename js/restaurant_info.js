@@ -65,6 +65,10 @@ fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL'
     callback(error, null);
   } else {
+    // Try submitting data stored locally
+    console.log('Submitting offline data');
+    DBHelper.submitOfflineData();
+    // Fetch restaurant data
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {

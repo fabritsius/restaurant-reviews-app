@@ -8,7 +8,7 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  initMap(); // added 
+  initMap();
   fetchNeighborhoods();
   fetchCuisines();
   changeTabIndexes();
@@ -119,6 +119,10 @@ updateRestaurants = () => {
     if (error) { // Got an error!
       console.error(error);
     } else {
+      // Try submitting data stored locally
+      console.log('Submitting offline data');
+      DBHelper.submitOfflineData();
+      // Reset and update restaurants
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
     }
