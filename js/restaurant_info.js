@@ -276,6 +276,7 @@ createReviewHTML = (review) => {
 createReviewFormHTML = () => {
   const form = document.createElement('form');
   form.setAttribute('id', 'review-form');
+  form.setAttribute('role', 'form');
 
   // add name field with a label
   const nameBox = document.createElement('div');
