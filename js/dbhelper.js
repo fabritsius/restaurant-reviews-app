@@ -373,15 +373,15 @@ class DBHelper {
       review.createdAt = now;
       review.updatedAt = now;
       // Put a review into IDB
-      DBHelper._dbPromise.then(db => {
-        if (!db) return;
-        const store = db.transaction('reviews_data', 'readwrite')
-          .objectStore('reviews_data');
-        store.put(review);
-      }).catch(error => {
-        console.log(error);
-        return;
-      });
+      // DBHelper._dbPromise.then(db => {
+      //   if (!db) return;
+      //   const store = db.transaction('reviews_data', 'readwrite')
+      //     .objectStore('reviews_data');
+      //   store.put(review);
+      // }).catch(error => {
+      //   console.log(error);
+      //   return;
+      // });
       // Store new review in offline store
       // to upload as soon as connection returns.
       const specialId = `reviews_data:${now}`;
