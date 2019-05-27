@@ -51,7 +51,5 @@ Although I passed all stages and got a certificate, this project isn't truly fin
 - [x] Finish the course and get a certificate
 - [ ] Change color palette to the one currently used in the icon
 - [ ] Add user feedback (like when request failed or connection restored)
-- [ ] Write a Go server for this project (also host it somewhere)
-- [ ] Use GitHub Pages to host this project 
 
 Thanks for your attention!
